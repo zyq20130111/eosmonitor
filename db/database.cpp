@@ -48,8 +48,8 @@ namespace eosio
 
                 if(trx.actions.size()==1 && trx.actions[0].name.to_string() == "onblock" ) continue ;
 
-                for(auto actions : trx.actions){
-                    m_actions_table->add( m_session_pool->get_session(), actions,trx.id(), bs->block->timestamp, m_action_filter_on);
+                for(const auto& act : trx.actions){
+                    m_actions_table->add( m_session_pool->get_session(), act,trx.id(), bs->block->timestamp, m_action_filter_on);
                 }
 
             }         
