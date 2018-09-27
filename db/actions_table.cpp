@@ -177,7 +177,7 @@ namespace eosio {
                 auto stake_cpu_quantity = abi_data["stake_cpu_quantity"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO delegatebw (from,receiver ,stake_net_quantity,stake_cpu_quantity,tran_id)  VALUES( :from, :receiver,:stake_net_quantity,:stake_cpu_quantity,:tran_id ) ",
+                    *m_session << "INSERT INTO delegatebw (frm_acc,receiver ,stake_net_quantity,stake_cpu_quantity,tran_id)  VALUES( :from, :receiver , :stake_net_quantity , :stake_cpu_quantity , :tran_id ) ",
                             soci::use(from),
                             soci::use(receiver),
                             soci::use(stake_net_quantity),
@@ -201,7 +201,7 @@ namespace eosio {
                 auto unstake_cpu_quantity = abi_data["unstake_cpu_quantity"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO undelegatebw (from,receiver ,unstake_net_quantity,unstake_cpu_quantity,tran_id)  VALUES( :from, :receiver,:unstake_net_quantity,:unstake_cpu_quantity,:tran_id ) ",
+                    *m_session << "INSERT INTO undelegatebw (frm_acc,receiver ,unstake_net_quantity,unstake_cpu_quantity,tran_id)  VALUES( :from, :receiver, :unstake_net_quantity , :unstake_cpu_quantity , :tran_id ) ",
                             soci::use(from),
                             soci::use(receiver),
                             soci::use(unstake_net_quantity),
@@ -245,7 +245,7 @@ namespace eosio {
                 auto memo = abi_data["memo"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO undelegatebw (from,to ,quantity,memo,tran_id)  VALUES( :from, :to,:quantity,:memo,:tran_id ) ",
+                    *m_session << "INSERT INTO transfer (frm_acc,to ,quantity,memo,tran_id)  VALUES( :from, :to,:quantity,:memo,:tran_id ) ",
                             soci::use(from),
                             soci::use(to),
                             soci::use(quantity),
