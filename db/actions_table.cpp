@@ -41,7 +41,7 @@ namespace eosio {
         }
 
         try {
-            auto is_success = parse_actions( m_session, action );
+            auto is_success = parse_actions( m_session, action , transaction_id_str);
             return is_success;
         }  catch(fc::exception& e) {
             wlog("fc exception: ${e}",("e",e.what()));
@@ -56,7 +56,7 @@ namespace eosio {
         return false;
     }
 
-    bool actions_table::parse_actions( std::shared_ptr<soci::session> m_session, chain::action action ) {
+    bool actions_table::parse_actions( std::shared_ptr<soci::session> m_session, chain::action action,const std::string & transaction_id ) {
 
         chain::abi_def abi;
         std::string abi_def_account;
@@ -109,11 +109,12 @@ namespace eosio {
                 auto producers = fc::json::to_string( abi_data["producers"] );
 
                 try{
-                    *m_session << "INSERT INTO votes ( voter, proxy, producers )  VALUES( :vo, :pro, :pd ) "
+                    *m_session << "INSERT INTO votes ( voter, proxy, producers )  VALUES( :vo, :pro, :pd,:tran_id ) "
                             "on  DUPLICATE key UPDATE proxy = :pro, producers =  :pd ",
                             soci::use(voter),
                             soci::use(proxy),
                             soci::use(producers),
+                            soci::use(transaction_id),
                             soci::use(proxy),
                             soci::use(producers);
                 } catch(soci::mysql_soci_error e) {

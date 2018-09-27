@@ -156,6 +156,24 @@ namespace eosio {
              my->accepted_block(bs);
          } ));
         
+         my->irreversible_block_connection.emplace(
+               chain.irreversible_block.connect( [&]( const chain::block_state_ptr& bs ) {
+                  int a = 1;
+                  a = a + 1;
+               } ));
+
+         my->accepted_transaction_connection.emplace(
+               chain.accepted_transaction.connect( [&]( const chain::transaction_metadata_ptr& t ) {
+                  int a = 1;
+                  a = a + 1;
+               } ));
+
+         my->applied_transaction_connection.emplace(
+               chain.applied_transaction.connect( [&]( const chain::transaction_trace_ptr& t ) {
+                  int a = 1;
+                  a = a + 1;
+               } ));
+
         /*
         my->applied_transaction_connection.emplace(chain.applied_transaction.connect([this,trace_id_str](const chain::transaction_trace_ptr& tt){
             if(my->start_parse_trace){
@@ -174,10 +192,10 @@ namespace eosio {
     void sql_db_plugin::plugin_shutdown() {
         ilog("shutdown");
         // my->handler->shutdown();
-        // my->accepted_block_connection.reset();
-        // my->irreversible_block_connection.reset();
-        // my->accepted_transaction_connection.reset();
-        // my->applied_transaction_connection.reset();
+         my->accepted_block_connection.reset();
+         my->irreversible_block_connection.reset();
+         my->accepted_transaction_connection.reset();
+         my->applied_transaction_connection.reset();
     }
 
     namespace sql_db_apis{
