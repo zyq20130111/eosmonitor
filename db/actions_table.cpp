@@ -235,14 +235,17 @@ namespace eosio {
                     wlog(" ${producer} ${producer_key}",("producer",producer)("producer_key",producer_key));
                 }               
                 return true;
-            } else if (action.name == N(transfer) ){
+            }
+        } else if( action.account == N(eosio.token) ){
+            
+            if (action.name == N(transfer) ){
                 auto from = abi_data["from"].as<chain::name>().to_string();
                 auto to = abi_data["to"].as<chain::name>().to_string();
                 auto quantity = abi_data["quantity"].as_string();
                 auto memo = abi_data["memo"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO transfer (frm_acc,to ,quantity,memo,tran_id)  VALUES( :from, :to,:quantity,:memo,:tran_id ) ",
+                    *m_session << "INSERT INTO transfer (frm_acc,to_acc ,quantity,memo,tran_id)  VALUES( :from, :to,:quantity,:memo,:tran_id ) ",
                             soci::use(from),
                             soci::use(to),
                             soci::use(quantity),
@@ -259,6 +262,7 @@ namespace eosio {
                 }                 
                 return true;
             }
+
         } else if( action.account == N(eosio.msig) ) {
             ilog("hi");
             if( action.name == N(propose) ){
