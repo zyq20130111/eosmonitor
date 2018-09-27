@@ -109,14 +109,11 @@ namespace eosio {
                 auto producers = fc::json::to_string( abi_data["producers"] );
 
                 try{
-                    *m_session << "INSERT INTO votes ( voter, proxy, producers )  VALUES( :vo, :pro, :pd,:tran_id ) "
-                            "on  DUPLICATE key UPDATE proxy = :pro, producers =  :pd ",
+                    *m_session << "INSERT INTO votes ( voter, proxy, producers,tran_id )  VALUES( :vo, :pro, :pd,:tran_id ) ",
                             soci::use(voter),
                             soci::use(proxy),
                             soci::use(producers),
-                            soci::use(transaction_id),
-                            soci::use(proxy),
-                            soci::use(producers);
+                            soci::use(transaction_id);
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
                 } catch(std::exception e) {
@@ -223,7 +220,7 @@ namespace eosio {
                 auto url  = abi_data["url"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO sellram (producer,producer_key ,url,tran_id)  VALUES( :producer, :producer_key, :url, :tran_id ) ",
+                    *m_session << "INSERT INTO regproducer (producer,producer_key ,url,tran_id)  VALUES( :producer, :producer_key, :url, :tran_id ) ",
                             soci::use(producer),
                             soci::use(producer_key),
                             soci::use(url),
