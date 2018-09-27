@@ -137,7 +137,7 @@ namespace eosio {
         } else if (action.name == N(regproducer) ){
 
         } else if (action.name == N(transfer) ){
-
+            
         } else if( action.account == N(eosio.msig) ) {
             ilog("hi");
             if( action.name == N(propose) ){
