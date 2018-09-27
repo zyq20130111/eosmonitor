@@ -49,13 +49,13 @@ namespace eosio {
         
         int amount = 0;
         try{
-            soci::statement st = ( m_session->prepare << "UPDATE blocks SET irreversible = :irreversible WHERE id = :id",
+            soci::statement st = ( m_session->prepare << "UPDATE blocks SET irreversible = :irreversible WHERE block_id = :id",
                     soci::use(irreversible?1:0),
                     soci::use(block_id) );
             st.execute(true);
             amount = st.get_affected_rows();
             if(amount==0){
-                *m_session << "select count(*) from blocks where irreversible = 0 and id = :id ",
+                *m_session << "select count(*) from blocks where irreversible = 0 and block_id = :id ",
                     soci::into(amount),
                     soci::use(block_id);
                 if(amount==0) return true;

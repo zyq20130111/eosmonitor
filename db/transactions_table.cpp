@@ -36,7 +36,7 @@ namespace eosio {
     void transactions_table::irreversible_set( std::shared_ptr<soci::session> m_session, std::string block_id, bool irreversible, std::string transaction_id_str) {
 
         try{
-            *m_session << "UPDATE transactions SET block_id = :block_id, irreversible = :irreversible WHERE id = :id ",
+            *m_session << "UPDATE transactions SET block_id = :block_id, irreversible = :irreversible WHERE block_id = :id ",
                 soci::use(block_id),
                 soci::use(irreversible?1:0),
                 soci::use(transaction_id_str);
