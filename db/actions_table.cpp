@@ -127,17 +127,139 @@ namespace eosio {
                 }
                 return true;
             } else if( action.name == N(buyram) ){
+
+                auto payer = abi_data["payer"].as<chain::name>().to_string();
+                auto receiver = abi_data["receiver"].as<chain::name>().to_string();
+                auto quant = abi_data["quant"].as_string();
+
+                try{
+                    *m_session << "INSERT INTO buyram (payer,receiver,quant ,tran_id)  VALUES( :payer, :receiver, :quant,:tran_id ) ",
+                            soci::use(payer),
+                            soci::use(receiver),
+                            soci::use(quant),
+                            soci::use(transaction_id);
+
+                } catch(soci::mysql_soci_error e) {
+                    wlog("soci::error: ${e}",("e",e.what()) );
+                } catch(std::exception e) {
+                    wlog(" ${payer} ${receiver} ${quant}",("payer",payer)("receiver",receiver)("quant",quant));
+                    wlog( "${e}",("e",e.what()) );
+                } catch(...) {
+                    wlog(" ${payer} ${receiver} ${quant}",("payer",payer)("receiver",receiver)("quant",quant));
+                }
+
                 return true;
 
             } else if ( action.name == N(sellram) ){
+                auto account = abi_data["account"].as<chain::name>().to_string();
+                auto bytes   = abi_data["bytes"].as_int64();
+
+                try{
+                    *m_session << "INSERT INTO sellram (account,bytes ,tran_id)  VALUES( :account, :bytes,:tran_id ) ",
+                            soci::use(account),
+                            soci::use(bytes),
+                            soci::use(transaction_id);
+
+                } catch(soci::mysql_soci_error e) {
+                    wlog("soci::error: ${e}",("e",e.what()) );
+                } catch(std::exception e) {
+                    wlog(" ${account} ${bytes}",("account",account)("bytes",bytes));
+                    wlog( "${e}",("e",e.what()) );
+                } catch(...) {
+                    wlog(" ${account} ${bytes}",("account",account)("bytes",bytes));
+                }
                 return true;
             } else if (action.name == N(delegatebw) ){
+            
+                auto from = abi_data["from"].as<chain::name>().to_string();
+                auto receiver = abi_data["receiver"].as<chain::name>().to_string();
+                auto stake_net_quantity = abi_data["stake_net_quantity"].as_string();
+                auto stake_cpu_quantity = abi_data["stake_cpu_quantity"].as_string();
+
+                try{
+                    *m_session << "INSERT INTO delegatebw (from,receiver ,stake_net_quantity,stake_cpu_quantity,tran_id)  VALUES( :from, :receiver,:stake_net_quantity,:stake_cpu_quantity,:tran_id ) ",
+                            soci::use(from),
+                            soci::use(receiver),
+                            soci::use(stake_net_quantity),
+                            soci::use(stake_cpu_quantity),
+                            soci::use(transaction_id);
+
+                } catch(soci::mysql_soci_error e) {
+                    wlog("soci::error: ${e}",("e",e.what()) );
+                } catch(std::exception e) {
+                    wlog(" ${from} ${receiver}",("from",from)("receiver",receiver));
+                    wlog( "${e}",("e",e.what()) );
+                } catch(...) {
+                    wlog(" ${from} ${receiver}",("from",from)("receiver",receiver));
+                }                
                 return true;
             } else if (action.name == N(undelegatebw) ){
+
+                auto from = abi_data["from"].as<chain::name>().to_string();
+                auto receiver = abi_data["receiver"].as<chain::name>().to_string();
+                auto unstake_net_quantity = abi_data["unstake_net_quantity"].as_string();
+                auto unstake_cpu_quantity = abi_data["unstake_cpu_quantity"].as_string();
+
+                try{
+                    *m_session << "INSERT INTO undelegatebw (from,receiver ,unstake_net_quantity,unstake_cpu_quantity,tran_id)  VALUES( :from, :receiver,:unstake_net_quantity,:unstake_cpu_quantity,:tran_id ) ",
+                            soci::use(from),
+                            soci::use(receiver),
+                            soci::use(unstake_net_quantity),
+                            soci::use(unstake_cpu_quantity),
+                            soci::use(transaction_id);
+
+                } catch(soci::mysql_soci_error e) {
+                    wlog("soci::error: ${e}",("e",e.what()) );
+                } catch(std::exception e) {
+                    wlog(" ${from} ${receiver}",("from",from)("receiver",receiver));
+                    wlog( "${e}",("e",e.what()) );
+                } catch(...) {
+                    wlog(" ${from} ${receiver}",("from",from)("receiver",receiver));
+                }                  
                 return true;
             } else if (action.name == N(regproducer) ){
+                auto producer = abi_data["producer"].as<chain::name>().to_string();
+                auto producer_key   = abi_data["producer_key"].as_string();
+                auto url  = abi_data["url"].as_string();
+
+                try{
+                    *m_session << "INSERT INTO sellram (producer,producer_key ,url,tran_id)  VALUES( :producer, :producer_key, :url, :tran_id ) ",
+                            soci::use(producer),
+                            soci::use(producer_key),
+                            soci::use(url),
+                            soci::use(transaction_id);
+
+                } catch(soci::mysql_soci_error e) {
+                    wlog("soci::error: ${e}",("e",e.what()) );
+                } catch(std::exception e) {
+                    wlog(" ${producer} ${producer_key}",("producer",producer)("producer_key",producer_key));
+                    wlog( "${e}",("e",e.what()) );
+                } catch(...) {
+                    wlog(" ${producer} ${producer_key}",("producer",producer)("producer_key",producer_key));
+                }               
                 return true;
             } else if (action.name == N(transfer) ){
+                auto from = abi_data["from"].as<chain::name>().to_string();
+                auto to = abi_data["to"].as<chain::name>().to_string();
+                auto quantity = abi_data["quantity"].as_string();
+                auto memo = abi_data["memo"].as_string();
+
+                try{
+                    *m_session << "INSERT INTO undelegatebw (from,to ,quantity,memo,tran_id)  VALUES( :from, :to,:quantity,:memo,:tran_id ) ",
+                            soci::use(from),
+                            soci::use(to),
+                            soci::use(quantity),
+                            soci::use(memo),
+                            soci::use(transaction_id);
+
+                } catch(soci::mysql_soci_error e) {
+                    wlog("soci::error: ${e}",("e",e.what()) );
+                } catch(std::exception e) {
+                    wlog(" ${from} ${to}",("from",from)("to",to));
+                    wlog( "${e}",("e",e.what()) );
+                } catch(...) {
+                    wlog(" ${from} ${to}",("from",from)("to",to));
+                }                 
                 return true;
             }
         } else if( action.account == N(eosio.msig) ) {
