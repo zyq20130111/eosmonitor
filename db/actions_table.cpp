@@ -126,7 +126,17 @@ namespace eosio {
                     wlog(" ${voter} ${proxy} ${producers}",("voter",voter)("proxy",proxy)("producers",producers));
                 }
                 return true;
-            }
+        } else if( action.name == N(buyram) ){
+
+        } else if ( action.name == N(sellram) ){
+
+        } else if (action.name == N(delegatebw) ){
+
+        } else if (action.name == N(undelegatebw) ){
+
+        } else if (action.name == N(regproducer) ){
+
+        } else if (action.name == N(transfer) ){
 
         } else if( action.account == N(eosio.msig) ) {
             ilog("hi");
