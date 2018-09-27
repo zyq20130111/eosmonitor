@@ -32,7 +32,7 @@ namespace eosio {
 
             if (block->new_producers) {
                 const auto new_producers = fc::json::to_string(block->new_producers->producers);
-                *m_session << "UPDATE blocks SET new_producers = :np WHERE id = :id",
+                *m_session << "UPDATE blocks SET new_producers = :np WHERE block_id = :id",
                         soci::use(new_producers),
                         soci::use(block_id_str);
             }
