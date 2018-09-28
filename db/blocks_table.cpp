@@ -35,6 +35,8 @@ namespace eosio {
                 *m_session << "UPDATE blocks SET new_producers = :np WHERE block_id = :id",
                         soci::use(new_producers),
                         soci::use(block_id_str);
+
+                        
             }
         } catch(soci::mysql_soci_error e) {
             wlog("soci::error: ${e}",("e",e.what()) );

@@ -74,4 +74,43 @@ namespace eosio
         }
     }
 
+    int sql_database::get_min_account_id(){
+
+        int id = 0;           
+        auto session = m_session_pool->get_session();
+        *session << "select min(id) from accounts",
+            soci::into(id);
+
+        if (!session.got_data()){
+            return -1;
+        }  
+
+        return id;
+        
+    }
+
+    int sql_database::get_max_account_id(){
+
+        int id = 0;           
+        auto session = m_session_pool->get_session();
+        *session << "select max(id) from accounts",
+            soci::into(id);
+        
+        if (!session.got_data()){
+            return -1;
+        }  
+
+        return id;
+        
+    }
+
+    void sql_database::monitoraccount(int accountid){
+        
+        std::string acc_name;
+        auto session = m_session_pool->get_session();
+
+        *session << "select name from accounts where id=:id ", 
+             soci::use(accountid),soci::into(acc_name);
+    }
+
 } // namespace

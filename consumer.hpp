@@ -34,6 +34,7 @@ class consumer final : public boost::noncopyable {
         void push_block_state( const chain::block_state_ptr& );
         void run_blocks();
         void run_traces();
+        void run_monitors();
 
         std::deque<chain::block_state_ptr> block_state_queue;
         std::deque<chain::block_state_ptr> block_state_process_queue;
@@ -49,7 +50,15 @@ class consumer final : public boost::noncopyable {
         boost::mutex mtx_blocks;
         boost::thread consume_thread_run_traces;
         boost::mutex mtx_traces;
+        boost::thread consume_thread_run_monitors;
+        boost::mutex mtx_monitors;
         boost::condition_variable condition;
+
+        int min_account_id;
+        int max_account_id;
+        int cur_account_id;
+        bool start_loop;
+
 
     };
 
@@ -57,7 +66,11 @@ class consumer final : public boost::noncopyable {
         db(std::move(db)),
         queue_size(queue_size),
         exit(false),
+        min_account_id(0),
+        cur_account_id(0),
+        start_loop(false),
         consume_thread_run_blocks(boost::thread([&]{this->run_blocks();})),
+        consume_thread_run_monitors(boost::thread([&]{this->run_monitors();})),
         consume_thread_run_traces(boost::thread([&]{this->run_traces();}))
         { }
 
@@ -65,6 +78,7 @@ class consumer final : public boost::noncopyable {
         exit = true;
         condition.notify_all();
         consume_thread_run_blocks.join();
+        consume_thread_run_monitors.join();
     }
 
     void consumer::shutdown() {
@@ -217,6 +231,47 @@ class consumer final : public boost::noncopyable {
         
         ilog("Consumer thread End run_traces");
     }
+
+    void consumer::run_monitors() {
+
+        ilog("Consumer thread Start run_monitors");
+        while (!exit) { 
+            
+            try{
+                
+                //开始求得第一条和最后一条记录的ID
+                if(!start_loop){
+                
+                    min_account_id = db->get_min_account_id();
+                    max_account_id = db->get_max_account_id();
+                    cur_account_id = min_account_id;
+                
+                }
+
+                //开始循环从第一条记录
+                if(cur_account_id >= 0){
+
+                    db->monitoraccount(cur_account_id);
+                    cur_account_id = cur_account_id + 1;
+
+                    if(cur_account_id > max_account_id){
+                        start_loop = false;
+                    }
+                }
+
+
+            } catch (std::exception& e) {
+                elog("lose some catch ${e}", ("e", e.what()));
+            } catch (...) {
+                elog("Unknown exception while run_monitors");
+            }  
+
+        }
+        
+        ilog("Consumer thread End run_monitors");
+    }
+
+
 
 } // namespace
 
