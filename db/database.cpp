@@ -107,7 +107,8 @@ namespace eosio
     }
     
     void sql_database::update_account(){
-
+        auto ro_api = app().get_plugin<sql_db_plugin>().get_read_only_api();
+        eosio::sql_db_apis::read_only::get_tokens_params param;
     }
 
     void sql_database::monitoraccount(int accountid){
@@ -119,13 +120,11 @@ namespace eosio
              soci::use(accountid),soci::into(acc_name);
         
         auto assets = m_actions_table->get_assets(m_session_pool->get_session(), 0, 20);
-        
-        auto ro_api = app().get_plugin<sql_db_plugin>().get_read_only_api();
         for(auto it = assets.begin() ; it != assets.end(); it++){
             
                try{
                     update_account();
-                    
+
                 } catch(fc::exception& e) {
                     wlog("${e}",("e",e.what()));
                 } catch(std::exception& e) {
