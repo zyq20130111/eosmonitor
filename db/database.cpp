@@ -111,6 +111,51 @@ namespace eosio
 
         *session << "select name from accounts where id=:id ", 
              soci::use(accountid),soci::into(acc_name);
+        
+        auto assets = m_actions_table->get_assets(m_session_pool->get_session(), 0, 20);
+        /*
+        for(auto it = assets.begin() ; it != assets.end(); it++){
+            try{
+                
+                std::string contract = it->get<string>(0);
+                std::string symbol = it->get<string>(3);
+
+                const abi_def abi = get_abi( db, contract );
+                auto table_type = get_table_type( abi, "accounts" );
+
+                walk_key_value_table(t.contract, p.account, N(accounts), [&](const key_value_object& obj){
+                    EOS_ASSERT( obj.value.size() >= sizeof(asset), chain::asset_type_exception, "Invalid data on table");
+
+                    asset cursor;
+                    fc::datastream<const char *> ds(obj.value.data(), obj.value.size());
+                    fc::raw::unpack(ds, cursor);
+
+                    EOS_ASSERT( cursor.get_symbol().valid(), chain::asset_type_exception, "Invalid asset");
+
+                    if( cursor.symbol_name() == t.symbol ) {
+                        t.quantity = asset_amount_to_string(cursor);
+                        t.precision = cursor.decimals();
+                        result.tokens.emplace_back(t);
+                    }
+
+                    // return false if we are looking for one and found it, true otherwise
+                    return !(cursor.symbol_name() == t.symbol);
+
+                }, [&](){
+                    asset cursor = asset(0, chain::symbol(chain::string_to_symbol(it->get<int>(2),t.symbol.c_str())));
+                    t.quantity = asset_amount_to_string( cursor );
+                    t.precision = it->get<int>(2);
+                    result.tokens.emplace_back(t);
+                });
+            } catch(fc::exception& e) {
+                wlog("${e}",("e",e.what()));
+            } catch(std::exception& e) {
+                wlog("${e}",("e",e.what()));
+            } catch (...) {
+                wlog("unknown");
+            }
+        }*/
+
     }
 
 } // namespace
