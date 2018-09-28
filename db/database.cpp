@@ -81,7 +81,7 @@ namespace eosio
         *session << "select min(id) from accounts",
             soci::into(id);
 
-        if (!session.got_data()){
+        if (!session->got_data()){
             return -1;
         }  
 
@@ -96,7 +96,7 @@ namespace eosio
         *session << "select max(id) from accounts",
             soci::into(id);
         
-        if (!session.got_data()){
+        if (!session->got_data()){
             return -1;
         }  
 
