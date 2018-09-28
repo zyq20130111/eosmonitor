@@ -492,6 +492,10 @@ namespace eosio {
             }
         }
 
+        void read_only::addtoken(){
+
+        }
+
     }//namespace sql_db_apis
 
 } // namespace eosio

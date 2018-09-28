@@ -160,6 +160,8 @@ class read_only{
             return sign + result;
         }
 
+        void addtoken();
+
 };
 
 } // namespace sql_db_apis

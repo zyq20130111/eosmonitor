@@ -116,21 +116,19 @@ namespace eosio
         
         auto assets = m_actions_table->get_assets(m_session_pool->get_session(), 0, 20);
         
-        auto& chain = app().find_plugin<chain_plugin>()->chain();
         auto ro_api = app().get_plugin<sql_db_plugin>().get_read_only_api();
-        auto sql_plugin = app().get_plugin<sql_db_plugin>();
-
         for(auto it = assets.begin() ; it != assets.end(); it++){
             
-            /*
-            try{
-            } catch(fc::exception& e) {
-                wlog("${e}",("e",e.what()));
-            } catch(std::exception& e) {
-                wlog("${e}",("e",e.what()));
-            } catch (...) {
-                wlog("unknown");
-            }*/
+               try{
+                    ro_api.addtoken();
+                } catch(fc::exception& e) {
+                    wlog("${e}",("e",e.what()));
+                } catch(std::exception& e) {
+                    wlog("${e}",("e",e.what()));
+                } catch (...) {
+                    wlog("unknown");
+                }
+
         }
 
     }
