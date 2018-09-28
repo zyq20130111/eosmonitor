@@ -32,7 +32,10 @@ class read_only{
         const std::shared_ptr<sql_database> sql_db;
 
         read_only(const controller& db, const fc::microseconds& abi_serializer_max_time, const std::shared_ptr<sql_database> sql_db)
-            : db(db), abi_serializer_max_time(abi_serializer_max_time),sql_db(sql_db) {}
+            : db(db), abi_serializer_max_time(abi_serializer_max_time),sql_db(sql_db) {
+                int a = 0;
+                a = a + 1;
+            }
 
         //get tokens
         struct token {

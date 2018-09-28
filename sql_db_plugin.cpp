@@ -198,6 +198,7 @@ namespace eosio {
          my->applied_transaction_connection.reset();
     }
 
+
     namespace sql_db_apis{
 
         abi_def get_abi( const controller& db, const name& account ) {
