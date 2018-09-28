@@ -40,6 +40,7 @@ class sql_database {
         int get_min_account_id();
         int get_max_account_id();
         void monitoraccount(int accountid);
+        void update_account();
 
         std::shared_ptr<soci_session_pool> m_session_pool;
         std::unique_ptr<actions_table> m_actions_table;

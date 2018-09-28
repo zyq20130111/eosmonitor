@@ -105,6 +105,10 @@ namespace eosio
         return id;
         
     }
+    
+    void sql_database::update_account(){
+
+    }
 
     void sql_database::monitoraccount(int accountid){
         
@@ -120,7 +124,8 @@ namespace eosio
         for(auto it = assets.begin() ; it != assets.end(); it++){
             
                try{
-                    ro_api.addtoken();
+                    update_account();
+                    
                 } catch(fc::exception& e) {
                     wlog("${e}",("e",e.what()));
                 } catch(std::exception& e) {
