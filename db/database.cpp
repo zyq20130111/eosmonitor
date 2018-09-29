@@ -131,17 +131,23 @@ namespace eosio
        
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
 
+
+        optional<asset> liquid;
         asset staked;
         asset unstaking;
-        optional<asset> balance;
+        asset total;
+        
+        asset cpu_staked;
+        asset cpu_delegated;
+        int cpu_used;
+        int cpu_available;
+        int cpu_limit;
 
-        asset cpu_total;
-        asset cpu_own;
-        asset cpu_other;
-
-        asset net_total;
-        asset net_own;
-        asset net_other;
+        asset net_staked;
+        asset net_delegated;
+        int net_used;
+        int net_available;
+        int net_limit;
 
         eosio::chain_apis::read_only::get_account_params param;
         param.account_name = name(account);
