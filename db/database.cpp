@@ -136,7 +136,7 @@ namespace eosio
         asset staked;
         asset unstaking;
         asset total;
-        
+
         asset cpu_total;
         asset cpu_staked;
         asset cpu_delegated;
@@ -151,46 +151,65 @@ namespace eosio
         int net_available;
         int net_limit;
 
+
         eosio::chain_apis::read_only::get_account_params param;
         param.account_name = name(account);
         eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
-        
 
-      if ( result.core_liquid_balance.valid() ) {
-            liquid = result.core_liquid_balance;
-      }
-        
-      if ( result.total_resources.is_object() ) {
-         
-         auto aa = result.total_resources.get_object()["cpu_weight"].as_string();
 
-         cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string());
+        cpu_used      = result.cpu_limit.used;
+        cpu_available = result.cpu_limit.available;
+        cpu_limit     = result.cpu_limit.max;
 
-         if( result.self_delegated_bandwidth.is_object() ) {
+
+        net_used      = result.net_limit.used;
+        net_available = result.net_limit.available;
+        net_limit     = result.net_limit.max;
+
+
+
+        if ( result.core_liquid_balance.valid() ) {
+                liquid = result.core_liquid_balance;
+        }
             
-            auto bb = result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string();
-            cpu_staked = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
-            cpu_delegated = cpu_total - cpu_staked;
+        if ( result.total_resources.is_object() ) {
+    
+            cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string());
 
-         } else {
-            cpu_delegated = cpu_total;
-         }
-      }  
+            if( result.self_delegated_bandwidth.is_object() ) {
+                
+                cpu_staked = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
+                cpu_delegated = cpu_total - cpu_staked;
 
-      if ( result.total_resources.is_object() ) {
-        auto cc = result.total_resources.get_object()["net_weight"].as_string();
-        net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string());
-         if( result.self_delegated_bandwidth.is_object() ) {
+            } else {
+                cpu_delegated = cpu_total;
+            }
+        }  
 
-             auto dd = result.self_delegated_bandwidth.get_object()["net_weight"].as_string();
-             net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
-             net_delegated = net_total - net_staked;
-         }
-         else {
-             net_delegated = net_total;
-         }
-      }
+        if ( result.total_resources.is_object() ) {
+            
+            net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string());
+            if( result.self_delegated_bandwidth.is_object() ) {
 
+                net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
+                net_delegated = net_total - net_staked;
+            }
+            else {
+                net_delegated = net_total;
+            }
+        }
+
+
+        if( result.refund_request.is_object() ) {
+            
+            auto obj = result.refund_request.get_object();
+            asset net = asset::from_string( obj["net_amount"].as_string() );
+            asset cpu = asset::from_string( obj["cpu_amount"].as_string() );
+            unstaking = net + cpu;
+        }
+
+        staked = cpu_staked + net_staked;
+        total = staked + unstaking;
 
     }
 
