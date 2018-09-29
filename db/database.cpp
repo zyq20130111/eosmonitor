@@ -131,7 +131,6 @@ namespace eosio
        
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
 
-
         optional<asset> liquid;
         asset staked;
         asset unstaking;
@@ -209,7 +208,7 @@ namespace eosio
         }
 
         staked = cpu_staked + net_staked;
-        total = staked + unstaking;
+        total = staked + unstaking + liquid;
 
     }
 
