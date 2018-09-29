@@ -274,6 +274,7 @@ CREATE TABLE `votes` (
   `voter` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '账户名',
   `proxy` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '账号的投票代理人',
   `producers` json DEFAULT NULL COMMENT '账号所投节点的列表',
+  `tran_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',  
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_votes_voter` (`voter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
