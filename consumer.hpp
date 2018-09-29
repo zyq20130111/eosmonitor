@@ -259,6 +259,8 @@ class consumer final : public boost::noncopyable {
                     }
                 }
 
+                boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+
 
             } catch (std::exception& e) {
                 elog("lose some catch ${e}", ("e", e.what()));
