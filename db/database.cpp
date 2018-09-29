@@ -137,12 +137,14 @@ namespace eosio
         asset unstaking;
         asset total;
         
+        asset cpu_total;
         asset cpu_staked;
         asset cpu_delegated;
         int cpu_used;
         int cpu_available;
         int cpu_limit;
 
+        asset net_total;
         asset net_staked;
         asset net_delegated;
         int net_used;
@@ -155,33 +157,37 @@ namespace eosio
         
 
       if ( result.core_liquid_balance.valid() ) {
-            balance = result.core_liquid_balance;
+            liquid = result.core_liquid_balance;
       }
         
       if ( result.total_resources.is_object() ) {
          
+         auto aa = result.total_resources.get_object()["cpu_weight"].as_string();
+
          cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string());
 
          if( result.self_delegated_bandwidth.is_object() ) {
             
-            cpu_own = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
-            cpu_other = cpu_total - cpu_own;
+            auto bb = result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string();
+            cpu_staked = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
+            cpu_delegated = cpu_total - cpu_staked;
 
          } else {
-            cpu_other = cpu_total;
+            cpu_delegated = cpu_total;
          }
       }  
 
       if ( result.total_resources.is_object() ) {
-
-         auto net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string());
+        auto cc = result.total_resources.get_object()["net_weight"].as_string();
+        net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string());
          if( result.self_delegated_bandwidth.is_object() ) {
 
-             net_own =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
-             net_other = net_total - net_own;
+             auto dd = result.self_delegated_bandwidth.get_object()["net_weight"].as_string();
+             net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
+             net_delegated = net_total - net_staked;
          }
          else {
-             net_other = net_total;
+             net_delegated = net_total;
          }
       }
 
