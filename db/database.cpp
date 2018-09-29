@@ -158,8 +158,7 @@ namespace eosio
 
          if( result.self_delegated_bandwidth.is_object() ) {
             
-            asset cpu_own = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
-
+            cpu_own = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
             cpu_other = cpu_total - cpu_own;
 
          } else {
@@ -171,8 +170,8 @@ namespace eosio
 
          auto net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string());
          if( result.self_delegated_bandwidth.is_object() ) {
-            asset net_own =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
 
+             net_own =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
              net_other = net_total - net_own;
          }
          else {
