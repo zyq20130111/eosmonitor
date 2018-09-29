@@ -1,6 +1,7 @@
 // #include "database.hpp"
 #include <eosio/sql_db_plugin/database.hpp>
 #include <eosio/sql_db_plugin/sql_db_plugin.hpp>
+#include <eosio/chain_plugin/chain_plugin.hpp>
 
 
 namespace eosio
@@ -106,7 +107,7 @@ namespace eosio
         
     }
     
-    void sql_database::update_account(std::string account){
+    void sql_database::update_token(std::string account){
 
         auto ro_api = app().get_plugin<sql_db_plugin>().get_read_only_api();
         eosio::sql_db_apis::read_only::get_hold_tokens_params param;
@@ -121,11 +122,72 @@ namespace eosio
             int precision        =  it->precision;
             std::string contract =  it->contract.to_string();
 
-            save_account(account,symbol,quantity,precision,contract);
+            save_token(account,symbol,quantity,precision,contract);
         }
     }
 
-    void sql_database::save_account(std::string account,std::string symbol,std::string quantity,int precision,std::string contract){
+
+    void sql_database::update_stake(std::string account){
+       
+        auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
+
+        asset staked;
+        asset unstaking;
+        optional<asset> balance;
+
+        asset cpu_total;
+        asset cpu_own;
+        asset cpu_other;
+
+        asset net_total;
+        asset net_own;
+        asset net_other;
+
+        eosio::chain_apis::read_only::get_account_params param;
+        param.account_name = name(account);
+        eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
+        
+
+      if ( result.core_liquid_balance.valid() ) {
+            balance = result.core_liquid_balance;
+      }
+        
+      if ( result.total_resources.is_object() ) {
+         
+         cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string());
+
+         if( result.self_delegated_bandwidth.is_object() ) {
+            
+            asset cpu_own = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
+
+            cpu_other = cpu_total - cpu_own;
+
+         } else {
+            cpu_other = cpu_total;
+         }
+      }  
+
+      if ( result.total_resources.is_object() ) {
+
+         auto net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string());
+         if( result.self_delegated_bandwidth.is_object() ) {
+            asset net_own =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
+
+             net_other = net_total - net_own;
+         }
+         else {
+             net_other = net_total;
+         }
+      }
+
+
+    }
+
+    void sql_database::save_stake(std::string account){
+
+    }
+
+    void sql_database::save_token(std::string account,std::string symbol,std::string quantity,int precision,std::string contract){
 
         auto session = m_session_pool->get_session();
         try{
@@ -147,16 +209,19 @@ namespace eosio
     }
 
     void sql_database::monitoraccount(int accountid){
-        
+
+        auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
+
         std::string acc_name;
         auto session = m_session_pool->get_session();
 
         *session << "select name from accounts where id=:id ", 
              soci::use(accountid),soci::into(acc_name);
-        
-            
+               
         try{
-            update_account(acc_name);
+            
+            update_token(acc_name);
+            update_stake("accountnum11");
 
         } catch(fc::exception& e) {
             wlog("${e}",("e",e.what()));

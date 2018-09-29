@@ -15,7 +15,7 @@
 #include <eosio/chain/transaction.hpp>
 #include <fc/log/logger.hpp>
 #include <eosio/sql_db_plugin/database.hpp>
-
+#include <eosio/chain_plugin/chain_plugin.hpp>
 // #include "database.hpp"
 
 namespace eosio {
@@ -232,6 +232,7 @@ class consumer final : public boost::noncopyable {
         ilog("Consumer thread End run_traces");
     }
 
+
     void consumer::run_monitors() {
 
         ilog("Consumer thread Start run_monitors");
@@ -239,6 +240,8 @@ class consumer final : public boost::noncopyable {
             
             try{
                 
+                boost::this_thread::sleep(boost::posix_time::seconds(10));
+
                 //开始求得第一条和最后一条记录的ID
                 if(!start_loop){
                 
