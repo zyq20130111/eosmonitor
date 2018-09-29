@@ -106,9 +106,44 @@ namespace eosio
         
     }
     
-    void sql_database::update_account(){
+    void sql_database::update_account(std::string account){
+
         auto ro_api = app().get_plugin<sql_db_plugin>().get_read_only_api();
-        eosio::sql_db_apis::read_only::get_tokens_params param;
+        eosio::sql_db_apis::read_only::get_hold_tokens_params param;
+        param.account = N(account);
+        
+        eosio::sql_db_apis::read_only::get_hold_tokens_result result = ro_api.get_hold_tokens(param);
+        
+        for(auto it = result.tokens.begin() ; it != result.tokens.end(); it++){
+            
+            std::string symbol   =  it->symbol;
+            std::string quantity =  it->quantity;
+            int precision        =  it->precision;
+            std::string contract =  it->contract.to_string();
+
+            save_account(account,symbol,quantity,precision,contract);
+        }
+    }
+
+    void sql_database::save_account(std::string account,std::string symbol,std::string quantity,int precision,std::string contract){
+
+        auto session = m_session_pool->get_session();
+        try{
+            *session << "INSERT INTO tokens (account,symbol ,balance,symbol_precision,contract_owner)  VALUES( :from, :receiver , :stake_net_quantity , :stake_cpu_quantity , :tran_id ) ",
+                    soci::use(account),
+                    soci::use(symbol),
+                    soci::use(quantity),
+                    soci::use(precision),
+                    soci::use(contract);
+
+        } catch(soci::mysql_soci_error e) {
+            wlog("soci::error: ${e}",("e",e.what()) );
+        } catch(std::exception e) {
+            wlog(" ${account} ${symbol}",("account",account)("symbol",symbol));
+            wlog( "${e}",("e",e.what()) );
+        } catch(...) {
+            wlog(" ${account} ${symbol}",("account",account)("symbol",symbol));
+        }               
     }
 
     void sql_database::monitoraccount(int accountid){
@@ -119,20 +154,16 @@ namespace eosio
         *session << "select name from accounts where id=:id ", 
              soci::use(accountid),soci::into(acc_name);
         
-        auto assets = m_actions_table->get_assets(m_session_pool->get_session(), 0, 20);
-        for(auto it = assets.begin() ; it != assets.end(); it++){
             
-               try{
-                    update_account();
+        try{
+            update_account(acc_name);
 
-                } catch(fc::exception& e) {
-                    wlog("${e}",("e",e.what()));
-                } catch(std::exception& e) {
-                    wlog("${e}",("e",e.what()));
-                } catch (...) {
-                    wlog("unknown");
-                }
-
+        } catch(fc::exception& e) {
+            wlog("${e}",("e",e.what()));
+        } catch(std::exception& e) {
+            wlog("${e}",("e",e.what()));
+        } catch (...) {
+            wlog("unknown");
         }
 
     }
