@@ -58,6 +58,7 @@ class consumer final : public boost::noncopyable {
         int max_account_id;
         int cur_account_id;
         bool start_loop;
+        bool is_waiting;
 
 
     };
@@ -69,6 +70,7 @@ class consumer final : public boost::noncopyable {
         min_account_id(0),
         cur_account_id(0),
         start_loop(false),
+        is_waiting(true),
         consume_thread_run_blocks(boost::thread([&]{this->run_blocks();})),
         consume_thread_run_monitors(boost::thread([&]{this->run_monitors();})),
         consume_thread_run_traces(boost::thread([&]{this->run_traces();}))
@@ -240,7 +242,11 @@ class consumer final : public boost::noncopyable {
             
             try{
                 
-                boost::this_thread::sleep(boost::posix_time::seconds(10));
+                if(is_waiting){
+                    boost::this_thread::sleep(boost::posix_time::seconds(10));
+                    is_waiting = false;
+                }
+                
 
                 //开始求得第一条和最后一条记录的ID
                 if(!start_loop){
@@ -262,7 +268,7 @@ class consumer final : public boost::noncopyable {
                     }
                 }
 
-                boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+                boost::this_thread::sleep(boost::posix_time::milliseconds(10));
 
 
             } catch (std::exception& e) {

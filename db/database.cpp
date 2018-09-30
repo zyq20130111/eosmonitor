@@ -232,7 +232,7 @@ namespace eosio
 
         totalasset = total_stake + unstaking + liquid;
 
-
+        save_stake(account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage);
     }
 
     void sql_database::save_stake(
@@ -328,7 +328,7 @@ namespace eosio
         try{
             
             update_token(acc_name);
-            update_stake("accountnum11");
+            update_stake(acc_name);
 
         } catch(fc::exception& e) {
             wlog("${e}",("e",e.what()));
