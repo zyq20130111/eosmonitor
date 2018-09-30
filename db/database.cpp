@@ -129,6 +129,7 @@ namespace eosio
 
     void sql_database::update_stake(std::string account){
        
+        ilog("2222");
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
 
         int64_t liquid = 0;
@@ -155,11 +156,13 @@ namespace eosio
         int64_t ram_usage = 0;
 
         int64_t total_stake = 0;
-        
+        ilog("3333");
         eosio::chain_apis::read_only::get_account_params param;
+        ilog("4444");
         param.account_name = name(account);
+        ilog("5555");
         eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
-
+        ilog("6666");
 
         cpu_used      = result.cpu_limit.used;
         cpu_available = result.cpu_limit.available;
