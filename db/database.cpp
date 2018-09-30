@@ -261,8 +261,7 @@ namespace eosio
         
             auto session = m_session_pool->get_session();
             try{
-                *session << "REPLACE INTO stakes (account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage) 
-                VALUES( :account,:liquid ,:staked,:unstaking,:total,:total_stake,:totalasset,:cpu_total,:cpu_staked,:cpu_delegated,:cpu_used,:cpu_available,:cpu_limit,:net_total,:net_staked,:net_delegated,:net_used,:net_available,:net_limit,:ram_quota,:ram_usage ) ",
+                *session << "REPLACE INTO stakes (account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage)  VALUES( :account,:liquid ,:staked,:unstaking,:total,:total_stake,:totalasset,:cpu_total,:cpu_staked,:cpu_delegated,:cpu_used,:cpu_available,:cpu_limit,:net_total,:net_staked,:net_delegated,:net_used,:net_available,:net_limit,:ram_quota,:ram_usage ) ",
                         soci::use(account),
                         soci::use(liquid),
                         soci::use(staked),
