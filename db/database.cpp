@@ -111,7 +111,7 @@ namespace eosio
 
         auto ro_api = app().get_plugin<sql_db_plugin>().get_read_only_api();
         eosio::sql_db_apis::read_only::get_hold_tokens_params param;
-        param.account = N(account);
+        param.account = name(account);
         
         eosio::sql_db_apis::read_only::get_hold_tokens_result result = ro_api.get_hold_tokens(param);
         
@@ -131,26 +131,31 @@ namespace eosio
        
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
 
-        optional<asset> liquid;
-        asset staked;
-        asset unstaking;
-        asset total;
+        int liquid = 0;
+        int staked = 0;
+        int unstaking = 0;
+        int total = 0;
+        int totalasset = 0;
 
-        asset cpu_total;
-        asset cpu_staked;
-        asset cpu_delegated;
-        int cpu_used;
-        int cpu_available;
-        int cpu_limit;
+        int cpu_total = 0;
+        int cpu_staked = 0;
+        int cpu_delegated = 0;
+        int cpu_used = 0;
+        int cpu_available = 0;
+        int cpu_limit = 0;
 
-        asset net_total;
-        asset net_staked;
-        asset net_delegated;
-        int net_used;
-        int net_available;
-        int net_limit;
+        int net_total = 0;
+        int net_staked = 0;
+        int net_delegated = 0;
+        int net_used = 0;
+        int net_available = 0;
+        int net_limit = 0;
 
+        int ram_quota = 0;
+        int ram_usage = 0;
 
+        int total_stake = 0;
+        
         eosio::chain_apis::read_only::get_account_params param;
         param.account_name = name(account);
         eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
@@ -165,19 +170,20 @@ namespace eosio
         net_available = result.net_limit.available;
         net_limit     = result.net_limit.max;
 
-
+        ram_quota     = result.ram_quota;
+        ram_usage     = result.ram_usage;
 
         if ( result.core_liquid_balance.valid() ) {
-                liquid = result.core_liquid_balance;
+                liquid = result.core_liquid_balance->get_amount();
         }
             
         if ( result.total_resources.is_object() ) {
     
-            cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string());
+            cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string()).get_amount();
 
             if( result.self_delegated_bandwidth.is_object() ) {
                 
-                cpu_staked = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string());
+                cpu_staked = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string()).get_amount();
                 cpu_delegated = cpu_total - cpu_staked;
 
             } else {
@@ -187,10 +193,10 @@ namespace eosio
 
         if ( result.total_resources.is_object() ) {
             
-            net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string());
+            net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string()).get_amount();
             if( result.self_delegated_bandwidth.is_object() ) {
 
-                net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string() );
+                net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string()).get_amount(;
                 net_delegated = net_total - net_staked;
             }
             else {
@@ -202,13 +208,30 @@ namespace eosio
         if( result.refund_request.is_object() ) {
             
             auto obj = result.refund_request.get_object();
-            asset net = asset::from_string( obj["net_amount"].as_string() );
-            asset cpu = asset::from_string( obj["cpu_amount"].as_string() );
+            int net = asset::from_string( obj["net_amount"].as_string() ).get_amount();
+            int cpu = asset::from_string( obj["cpu_amount"].as_string() ).get_amount();
             unstaking = net + cpu;
         }
 
         staked = cpu_staked + net_staked;
         total = staked + unstaking + liquid;
+
+        eosio::chain_apis::read_only::get_table_rows_params params1;
+        params1.code = name("eosio");
+        params1.scope = "eosio";
+        params1.limit = 1;
+        params1.lower_bound = account;
+        params1.table = name("voters");
+        params1.table_key = "owner";
+        params1.json = true;
+
+        eosio::chain_apis::read_only::get_table_rows_result result1 = ro_api.get_table_rows(params1);
+        if(result1.rows.size() == 1){
+            total_stake = result1.rows[0]["staked"].as_int64();
+        }
+
+        totalasset = total_stake + unstaking + liquid;
+
 
     }
 
