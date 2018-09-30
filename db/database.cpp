@@ -235,8 +235,64 @@ namespace eosio
 
     }
 
-    void sql_database::save_stake(std::string account){
+    void sql_database::save_stake(
+        std::string account,
+        int liquid,
+        int staked,
+        int unstaking,
+        int total,
+        int total_stake,
+        int totalasset,
+        int cpu_total,
+        int cpu_staked,
+        int cpu_delegated,
+        int cpu_used,
+        int cpu_available,
+        int cpu_limit,
+        int net_total,
+        int net_staked,
+        int net_delegated,
+        int net_used,
+        int net_available,
+        int net_limit,
+        int ram_quota,
+        int ram_usage
+        ){
+        
+            auto session = m_session_pool->get_session();
+            try{
+                *session << "REPLACE INTO stakes (account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage) 
+                VALUES( :account,:liquid ,:staked,:unstaking,:total,:total_stake,:totalasset,:cpu_total,:cpu_staked,:cpu_delegated,:cpu_used,:cpu_available,:cpu_limit,:net_total,:net_staked,:net_delegated,:net_used,:net_available,:net_limit,:ram_quota,:ram_usage ) ",
+                        soci::use(account),
+                        soci::use(liquid),
+                        soci::use(staked),
+                        soci::use(unstaking),
+                        soci::use(total),
+                        soci::use(total_stake),
+                        soci::use(totalasset),
+                        soci::use(cpu_total),
+                        soci::use(cpu_staked),
+                        soci::use(cpu_delegated),
+                        soci::use(cpu_used),
+                        soci::use(cpu_available),
+                        soci::use(cpu_limit),
+                        soci::use(net_total),
+                        soci::use(net_staked),
+                        soci::use(net_delegated),
+                        soci::use(net_used),
+                        soci::use(net_available),
+                        soci::use(net_limit),
+                        soci::use(ram_quota),
+                        soci::use(ram_usage);
 
+            } catch(soci::mysql_soci_error e) {
+                wlog("soci::error: ${e}",("e",e.what()) );
+            } catch(std::exception e) {
+                wlog(" ${account} ${liquid}",("account",account)("liquid",liquid));
+                wlog( "${e}",("e",e.what()) );
+            } catch(...) {
+                wlog(" ${account} ${liquid}",("account",account)("liquid",liquid));
+            }  
     }
 
     void sql_database::save_token(std::string account,std::string symbol,std::string quantity,int precision,std::string contract){

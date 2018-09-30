@@ -45,7 +45,29 @@ class sql_database {
         void save_token(std::string account,std::string symbol,std::string quantity,int precision,std::string contract);
         
         void update_stake(std::string account);
-        void save_stake(std::string account);
+        void save_stake(
+                std::string account,
+                int liquid,
+                int staked,
+                int unstaking,
+                int total,
+                int total_stake,
+                int totalasset,
+                int cpu_total,
+                int cpu_staked,
+                int cpu_delegated,
+                int cpu_used,
+                int cpu_available,
+                int cpu_limit,
+                int net_total,
+                int net_staked,
+                int net_delegated,
+                int net_used,
+                int net_available,
+                int net_limit,
+                int ram_quota,
+                int ram_usage
+                );
 
         std::shared_ptr<soci_session_pool> m_session_pool;
         std::unique_ptr<actions_table> m_actions_table;

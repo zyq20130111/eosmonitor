@@ -191,12 +191,29 @@ DROP TABLE IF EXISTS `stakes`;
 CREATE TABLE `stakes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `account` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '账号',
-  `cpu_amount_by_self` bigint(65) NOT NULL DEFAULT '0' COMMENT '自己抵押的 cpu 资源',
-  `net_amount_by_self` bigint(65) NOT NULL DEFAULT '0' COMMENT '自己抵押的 net 资源',
-  `cpu_amount_by_other` bigint(65) NOT NULL DEFAULT '0' COMMENT '别人帮忙抵押的 cpu 资源',
-  `net_amount_by_other` bigint(65) NOT NULL DEFAULT '0' COMMENT '别人帮忙抵押的 net 资源',
+  `liquid` bigint(65) NOT NULL DEFAULT '0' COMMENT '流动的EOS',
+  `staked` bigint(65) NOT NULL DEFAULT '0' COMMENT '抵押给自己总的EOS',
+  `unstaking` bigint(65) NOT NULL DEFAULT '0' COMMENT '未抵押的',
+  `total` bigint(65) NOT NULL DEFAULT '0' COMMENT '总的EOS',
+  `total_stake` bigint(65) NOT NULL DEFAULT '0' COMMENT '本账户总的抵押',
+  `totalasset` bigint(65) NOT NULL DEFAULT '0' COMMENT '本账户总的EOS',
+  `cpu_total` bigint(65) NOT NULL DEFAULT '0',
+  `cpu_staked` bigint(65) NOT NULL DEFAULT '0',
+  `cpu_delegated` bigint(65) NOT NULL DEFAULT '0',
+  `cpu_used` bigint(65) NOT NULL DEFAULT '0',
+  `cpu_available` bigint(65) NOT NULL DEFAULT '0',
+  `cpu_limit` bigint(65) NOT NULL DEFAULT '0',
+  `net_total` bigint(65) NOT NULL DEFAULT '0',
+  `net_staked` bigint(65) NOT NULL DEFAULT '0',
+  `net_delegated` bigint(65) NOT NULL DEFAULT '0',
+  `net_used` bigint(65) NOT NULL DEFAULT '0',
+  `net_available` bigint(65) NOT NULL DEFAULT '0',
+  `net_limit` bigint(65) NOT NULL DEFAULT '0',
+  `ram_quota` bigint(65) NOT NULL DEFAULT '0',
+  `ram_usage` bigint(65) NOT NULL DEFAULT '0',
+
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_stakes_account` (`account`)
+  UNIQUE KEY `idx_account` (`account`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
