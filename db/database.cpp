@@ -196,7 +196,7 @@ namespace eosio
             net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string()).get_amount();
             if( result.self_delegated_bandwidth.is_object() ) {
 
-                net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string()).get_amount(;
+                net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string()).get_amount();
                 net_delegated = net_total - net_staked;
             }
             else {
