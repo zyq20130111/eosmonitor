@@ -131,30 +131,30 @@ namespace eosio
        
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
 
-        int liquid = 0;
-        int staked = 0;
-        int unstaking = 0;
-        int total = 0;
-        int totalasset = 0;
+        int64_t liquid = 0;
+        int64_t staked = 0;
+        int64_t unstaking = 0;
+        int64_t total = 0;
+        int64_t totalasset = 0;
 
-        int cpu_total = 0;
-        int cpu_staked = 0;
-        int cpu_delegated = 0;
-        int cpu_used = 0;
-        int cpu_available = 0;
-        int cpu_limit = 0;
+        int64_t cpu_total = 0;
+        int64_t cpu_staked = 0;
+        int64_t cpu_delegated = 0;
+        int64_t cpu_used = 0;
+        int64_t cpu_available = 0;
+        int64_t cpu_limit = 0;
 
-        int net_total = 0;
-        int net_staked = 0;
-        int net_delegated = 0;
-        int net_used = 0;
-        int net_available = 0;
-        int net_limit = 0;
+        int64_t net_total = 0;
+        int64_t net_staked = 0;
+        int64_t net_delegated = 0;
+        int64_t net_used = 0;
+        int64_t net_available = 0;
+        int64_t net_limit = 0;
 
-        int ram_quota = 0;
-        int ram_usage = 0;
+        int64_t ram_quota = 0;
+        int64_t ram_usage = 0;
 
-        int total_stake = 0;
+        int64_t total_stake = 0;
         
         eosio::chain_apis::read_only::get_account_params param;
         param.account_name = name(account);
@@ -237,26 +237,26 @@ namespace eosio
 
     void sql_database::save_stake(
         std::string account,
-        int liquid,
-        int staked,
-        int unstaking,
-        int total,
-        int total_stake,
-        int totalasset,
-        int cpu_total,
-        int cpu_staked,
-        int cpu_delegated,
-        int cpu_used,
-        int cpu_available,
-        int cpu_limit,
-        int net_total,
-        int net_staked,
-        int net_delegated,
-        int net_used,
-        int net_available,
-        int net_limit,
-        int ram_quota,
-        int ram_usage
+        int64_t liquid,
+        int64_t staked,
+        int64_t unstaking,
+        int64_t total,
+        int64_t total_stake,
+        int64_t totalasset,
+        int64_t cpu_total,
+        int64_t cpu_staked,
+        int64_t cpu_delegated,
+        int64_t cpu_used,
+        int64_t cpu_available,
+        int64_t cpu_limit,
+        int64_t net_total,
+        int64_t net_staked,
+        int64_t net_delegated,
+        int64_t net_used,
+        int64_t net_available,
+        int64_t net_limit,
+        int64_t ram_quota,
+        int64_t ram_usage
         ){
         
             auto session = m_session_pool->get_session();
@@ -324,6 +324,10 @@ namespace eosio
 
         *session << "select name from accounts where id=:id ", 
              soci::use(accountid),soci::into(acc_name);
+
+        if(acc_name.empty()){
+            return;
+        }
                
         try{
             

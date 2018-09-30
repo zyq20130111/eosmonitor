@@ -254,6 +254,7 @@ class consumer final : public boost::noncopyable {
                     min_account_id = db->get_min_account_id();
                     max_account_id = db->get_max_account_id();
                     cur_account_id = min_account_id;
+                    start_loop = true;
                 
                 }
 
