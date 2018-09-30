@@ -331,7 +331,8 @@ namespace eosio
                
         try{
             
-            update_token(acc_name);
+            ilog("1111");
+            //update_token(acc_name);
             update_stake(acc_name);
 
         } catch(fc::exception& e) {
