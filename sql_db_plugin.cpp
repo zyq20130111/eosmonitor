@@ -55,7 +55,7 @@ namespace eosio {
                     return true;
                 }
                 return false;
-            }
+            }   
 
     };
 
@@ -197,6 +197,7 @@ namespace eosio {
          my->accepted_transaction_connection.reset();
          my->applied_transaction_connection.reset();
     }
+
 
 
     namespace sql_db_apis{

@@ -132,6 +132,15 @@ namespace eosio
         ilog("2222");
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
 
+        if(app().get_plugin<chain_plugin>().chain() == nullptr){
+            return;
+        }
+
+        if(app().get_plugin<chain_plugin>().chain().head_block_state() == nullptr){
+            return;
+        }
+
+       
         int64_t liquid = 0;
         int64_t staked = 0;
         int64_t unstaking = 0;
