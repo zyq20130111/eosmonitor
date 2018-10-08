@@ -156,87 +156,92 @@ namespace eosio
         int64_t ram_usage = 0;
 
         int64_t total_stake = 0;
-        ilog("3333");
-        eosio::chain_apis::read_only::get_account_params param;
-        ilog("4444");
-        param.account_name = name(account);
-        ilog("5555");
-        ilog(account);
-        eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
-        ilog("6666");
+        
+        try{
 
-        cpu_used      = result.cpu_limit.used;
-        cpu_available = result.cpu_limit.available;
-        cpu_limit     = result.cpu_limit.max;
+            eosio::chain_apis::read_only::get_account_params param;
+            param.account_name = name(account);
+            eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
+            ilog("6666");
+
+            cpu_used      = result.cpu_limit.used;
+            cpu_available = result.cpu_limit.available;
+            cpu_limit     = result.cpu_limit.max;
 
 
-        net_used      = result.net_limit.used;
-        net_available = result.net_limit.available;
-        net_limit     = result.net_limit.max;
+            net_used      = result.net_limit.used;
+            net_available = result.net_limit.available;
+            net_limit     = result.net_limit.max;
 
-        ram_quota     = result.ram_quota;
-        ram_usage     = result.ram_usage;
+            ram_quota     = result.ram_quota;
+            ram_usage     = result.ram_usage;
 
-        if ( result.core_liquid_balance.valid() ) {
-                liquid = result.core_liquid_balance->get_amount();
-        }
-            
-        if ( result.total_resources.is_object() ) {
-    
-            cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string()).get_amount();
-
-            if( result.self_delegated_bandwidth.is_object() ) {
-                
-                cpu_staked = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string()).get_amount();
-                cpu_delegated = cpu_total - cpu_staked;
-
-            } else {
-                cpu_delegated = cpu_total;
+            if ( result.core_liquid_balance.valid() ) {
+                    liquid = result.core_liquid_balance->get_amount();
             }
+                
+            if ( result.total_resources.is_object() ) {
+        
+                cpu_total = asset::from_string(result.total_resources.get_object()["cpu_weight"].as_string()).get_amount();
+
+                if( result.self_delegated_bandwidth.is_object() ) {
+                    
+                    cpu_staked = asset::from_string(result.self_delegated_bandwidth.get_object()["cpu_weight"].as_string()).get_amount();
+                    cpu_delegated = cpu_total - cpu_staked;
+
+                } else {
+                    cpu_delegated = cpu_total;
+                }
+            }  
+
+            if ( result.total_resources.is_object() ) {
+                
+                net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string()).get_amount();
+                if( result.self_delegated_bandwidth.is_object() ) {
+
+                    net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string()).get_amount();
+                    net_delegated = net_total - net_staked;
+                }
+                else {
+                    net_delegated = net_total;
+                }
+            }
+
+
+            if( result.refund_request.is_object() ) {
+                
+                auto obj = result.refund_request.get_object();
+                int net = asset::from_string( obj["net_amount"].as_string() ).get_amount();
+                int cpu = asset::from_string( obj["cpu_amount"].as_string() ).get_amount();
+                unstaking = net + cpu;
+            }
+
+            staked = cpu_staked + net_staked;
+            total = staked + unstaking + liquid;
+
+            eosio::chain_apis::read_only::get_table_rows_params params1;
+            params1.code = name("eosio");
+            params1.scope = "eosio";
+            params1.limit = 1;
+            params1.lower_bound = account;
+            params1.table = name("voters");
+            params1.table_key = "owner";
+            params1.json = true;
+
+            eosio::chain_apis::read_only::get_table_rows_result result1 = ro_api.get_table_rows(params1);
+            if(result1.rows.size() == 1){
+                total_stake = result1.rows[0]["staked"].as_int64();
+            }
+
+            totalasset = total_stake + unstaking + liquid;
+
+            save_stake(account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage);
+
+
+        } catch(...) {
+            wlog("update_stake error");
         }  
 
-        if ( result.total_resources.is_object() ) {
-            
-            net_total = asset::from_string(result.total_resources.get_object()["net_weight"].as_string()).get_amount();
-            if( result.self_delegated_bandwidth.is_object() ) {
-
-                net_staked =  asset::from_string( result.self_delegated_bandwidth.get_object()["net_weight"].as_string()).get_amount();
-                net_delegated = net_total - net_staked;
-            }
-            else {
-                net_delegated = net_total;
-            }
-        }
-
-
-        if( result.refund_request.is_object() ) {
-            
-            auto obj = result.refund_request.get_object();
-            int net = asset::from_string( obj["net_amount"].as_string() ).get_amount();
-            int cpu = asset::from_string( obj["cpu_amount"].as_string() ).get_amount();
-            unstaking = net + cpu;
-        }
-
-        staked = cpu_staked + net_staked;
-        total = staked + unstaking + liquid;
-
-        eosio::chain_apis::read_only::get_table_rows_params params1;
-        params1.code = name("eosio");
-        params1.scope = "eosio";
-        params1.limit = 1;
-        params1.lower_bound = account;
-        params1.table = name("voters");
-        params1.table_key = "owner";
-        params1.json = true;
-
-        eosio::chain_apis::read_only::get_table_rows_result result1 = ro_api.get_table_rows(params1);
-        if(result1.rows.size() == 1){
-            total_stake = result1.rows[0]["staked"].as_int64();
-        }
-
-        totalasset = total_stake + unstaking + liquid;
-
-        save_stake(account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage);
     }
 
     void sql_database::save_stake(
