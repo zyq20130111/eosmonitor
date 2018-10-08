@@ -161,6 +161,7 @@ namespace eosio
         ilog("4444");
         param.account_name = name(account);
         ilog("5555");
+        ilog(account);
         eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
         ilog("6666");
 
