@@ -129,14 +129,10 @@ namespace eosio
 
     void sql_database::update_stake(std::string account){
        
-        ilog("2222");
+        
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
-
-        if(app().get_plugin<chain_plugin>().chain() == nullptr){
-            return;
-        }
-
-        if(app().get_plugin<chain_plugin>().chain().head_block_state() == nullptr){
+        if(!app().get_plugin<chain_plugin>().chain().head_block_state()){
+            ilog("head block state is null"); 
             return;
         }
 
