@@ -344,7 +344,7 @@ namespace eosio
                
         try{
             
-            flag = update_token(acc_name);
+            //flag = update_token(acc_name);
             flag = update_stake(acc_name);
 
         } catch(fc::exception& e) {
