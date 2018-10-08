@@ -39,7 +39,7 @@ class sql_database {
         void dfs_inline_traces( std::shared_ptr<soci::session>, vector<chain::action_trace>,  chain::transaction_id_type, chain::block_timestamp_type );
         int get_min_account_id();
         int get_max_account_id();
-        void monitoraccount(int accountid);
+        bool monitoraccount(int accountid);
 
         bool update_token(std::string account);
         void save_token(std::string account,std::string symbol,std::string quantity,int precision,std::string contract);
