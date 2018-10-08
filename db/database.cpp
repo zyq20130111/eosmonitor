@@ -107,7 +107,7 @@ namespace eosio
         
     }
     
-    void sql_database::update_token(std::string account){
+    bool sql_database::update_token(std::string account){
 
         auto ro_api = app().get_plugin<sql_db_plugin>().get_read_only_api();
         eosio::sql_db_apis::read_only::get_hold_tokens_params param;
@@ -124,16 +124,18 @@ namespace eosio
 
             save_token(account,symbol,quantity,precision,contract);
         }
+
+        return true;
     }
 
 
-    void sql_database::update_stake(std::string account){
+    bool sql_database::update_stake(std::string account){
        
         
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
         if(!app().get_plugin<chain_plugin>().chain().head_block_state()){
             ilog("head block state is null"); 
-            return;
+            return false;
         }
 
        
@@ -167,7 +169,6 @@ namespace eosio
             eosio::chain_apis::read_only::get_account_params param;
             param.account_name = name(account);
             eosio::chain_apis::read_only::get_account_results result = ro_api.get_account(param);
-            ilog("6666");
 
             cpu_used      = result.cpu_limit.used;
             cpu_available = result.cpu_limit.available;
@@ -245,7 +246,9 @@ namespace eosio
 
         } catch(...) {
             wlog("update_stake error");
-        }  
+        }
+
+        return true;
 
     }
 
@@ -329,8 +332,9 @@ namespace eosio
         }               
     }
 
-    void sql_database::monitoraccount(int accountid){
+    bool sql_database::monitoraccount(int accountid){
 
+        bool flag = true;
         auto ro_api = app().get_plugin<chain_plugin>().get_read_only_api();
 
         std::string acc_name;
@@ -340,14 +344,13 @@ namespace eosio
              soci::use(accountid),soci::into(acc_name);
 
         if(acc_name.empty()){
-            return;
+            return true;
         }
                
         try{
             
-            ilog("1111");
-            //update_token(acc_name);
-            update_stake(acc_name);
+            flag = update_token(acc_name);
+            flag = update_stake(acc_name);
 
         } catch(fc::exception& e) {
             wlog("${e}",("e",e.what()));
@@ -356,6 +359,8 @@ namespace eosio
         } catch (...) {
             wlog("unknown");
         }
+
+        return flag;
 
     }
 

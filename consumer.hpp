@@ -261,11 +261,13 @@ class consumer final : public boost::noncopyable {
                 //开始循环从第一条记录
                 if(cur_account_id >= 0){
 
-                    db->monitoraccount(cur_account_id);
-                    cur_account_id = cur_account_id + 1;
+                    if(db->monitoraccount(cur_account_id))
+                    {
+                        cur_account_id = cur_account_id + 1;
 
-                    if(cur_account_id > max_account_id){
-                        start_loop = false;
+                        if(cur_account_id > max_account_id){
+                            start_loop = false;
+                        }
                     }
                 }
 

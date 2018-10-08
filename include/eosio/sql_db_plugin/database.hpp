@@ -41,10 +41,10 @@ class sql_database {
         int get_max_account_id();
         void monitoraccount(int accountid);
 
-        void update_token(std::string account);
+        bool update_token(std::string account);
         void save_token(std::string account,std::string symbol,std::string quantity,int precision,std::string contract);
         
-        void update_stake(std::string account);
+        bool update_stake(std::string account);
         void save_stake(
                 std::string account,
                 int64_t liquid,
