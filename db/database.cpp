@@ -310,7 +310,7 @@ namespace eosio
 
         auto session = m_session_pool->get_session();
         try{
-            *session << "INSERT INTO tokens (account,symbol ,balance,symbol_precision,contract_owner)  VALUES( :from, :receiver , :stake_net_quantity , :stake_cpu_quantity , :tran_id ) ",
+            *session << "REPLACE INTO tokens (account,symbol ,balance,symbol_precision,contract_owner)  VALUES( :from, :receiver , :stake_net_quantity , :stake_cpu_quantity , :tran_id ) ",
                     soci::use(account),
                     soci::use(symbol),
                     soci::use(quantity),
