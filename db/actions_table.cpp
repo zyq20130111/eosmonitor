@@ -109,7 +109,7 @@ namespace eosio {
                 auto producers = fc::json::to_string( abi_data["producers"] );
 
                 try{
-                    *m_session << "INSERT INTO votes ( voter, proxy, producers,tran_id )  VALUES( :vo, :pro, :pd,:tran_id ) ",
+                    *m_session << "REPLACE INTO votes ( voter, proxy, producers,tran_id )  VALUES( :vo, :pro, :pd,:tran_id ) ",
                             soci::use(voter),
                             soci::use(proxy),
                             soci::use(producers),
