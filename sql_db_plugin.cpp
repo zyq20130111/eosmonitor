@@ -196,6 +196,9 @@ namespace eosio {
          my->irreversible_block_connection.reset();
          my->accepted_transaction_connection.reset();
          my->applied_transaction_connection.reset();
+
+         my.reset();
+
     }
 
 

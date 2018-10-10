@@ -81,12 +81,15 @@ class consumer final : public boost::noncopyable {
         condition.notify_all();
         consume_thread_run_blocks.join();
         consume_thread_run_monitors.join();
+        consume_thread_run_traces.join();
     }
 
     void consumer::shutdown() {
         exit = true;
         condition.notify_all();
         consume_thread_run_blocks.join();
+        consume_thread_run_monitors.join();
+        consume_thread_run_traces.join();
     }
 
     template<typename Queue, typename Entry>
