@@ -273,8 +273,28 @@ namespace eosio
         
             auto session = m_session_pool->get_session();
             try{
-                *session << "REPLACE INTO stakes (account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage)  VALUES( :account,:liquid ,:staked,:unstaking,:total,:total_stake,:totalasset,:cpu_total,:cpu_staked,:cpu_delegated,:cpu_used,:cpu_available,:cpu_limit,:net_total,:net_staked,:net_delegated,:net_used,:net_available,:net_limit,:ram_quota,:ram_usage ) ",
+                *session << "INSERT INTO stakes (account,liquid ,staked,unstaking,total,total_stake,totalasset,cpu_total,cpu_staked,cpu_delegated,cpu_used,cpu_available,cpu_limit,net_total,net_staked,net_delegated,net_used,net_available,net_limit,ram_quota,ram_usage)  VALUES( :account,:liquid ,:staked,:unstaking,:total,:total_stake,:totalasset,:cpu_total,:cpu_staked,:cpu_delegated,:cpu_used,:cpu_available,:cpu_limit,:net_total,:net_staked,:net_delegated,:net_used,:net_available,:net_limit,:ram_quota,:ram_usage ) ON DUPLICATE KEY UPDATE liquid=:liquid ,staked=:staked,unstaking=:unstaking,total=:total,total_stake=:total_stake,totalasset=:totalasset,cpu_total=:cpu_total,cpu_staked=:cpu_staked,cpu_delegated=:cpu_delegated,cpu_used=:cpu_used,cpu_available=:cpu_available,cpu_limit=:cpu_limit,net_total=:net_total,net_staked=:net_staked,net_delegated=:net_delegated,net_used=:net_used,net_available=:net_available,net_limit=:net_limit,ram_quota=:ram_quota,ram_usage=:ram_usage",
                         soci::use(account),
+                        soci::use(liquid),
+                        soci::use(staked),
+                        soci::use(unstaking),
+                        soci::use(total),
+                        soci::use(total_stake),
+                        soci::use(totalasset),
+                        soci::use(cpu_total),
+                        soci::use(cpu_staked),
+                        soci::use(cpu_delegated),
+                        soci::use(cpu_used),
+                        soci::use(cpu_available),
+                        soci::use(cpu_limit),
+                        soci::use(net_total),
+                        soci::use(net_staked),
+                        soci::use(net_delegated),
+                        soci::use(net_used),
+                        soci::use(net_available),
+                        soci::use(net_limit),
+                        soci::use(ram_quota),
+                        soci::use(ram_usage),
                         soci::use(liquid),
                         soci::use(staked),
                         soci::use(unstaking),
@@ -310,12 +330,14 @@ namespace eosio
 
         auto session = m_session_pool->get_session();
         try{
-            *session << "REPLACE INTO tokens (account,symbol ,balance,symbol_precision,contract_owner)  VALUES( :from, :receiver , :stake_net_quantity , :stake_cpu_quantity , :tran_id ) ",
+            *session << "INSERT INTO tokens (account,symbol ,balance,symbol_precision,contract_owner)  VALUES( :account, :symbol , :balance , :symbol_precision , :contract_owner ) ON DUPLICATE KEY UPDATE balance=:balance,symbol_precision=:symbol_precision",
                     soci::use(account),
                     soci::use(symbol),
                     soci::use(quantity),
                     soci::use(precision),
-                    soci::use(contract);
+                    soci::use(contract),
+                    soci::use(quantity),
+                    soci::use(precision);
 
         } catch(soci::mysql_soci_error e) {
             wlog("soci::error: ${e}",("e",e.what()) );

@@ -109,8 +109,11 @@ namespace eosio {
                 auto producers = fc::json::to_string( abi_data["producers"] );
 
                 try{
-                    *m_session << "REPLACE INTO votes ( voter, proxy, producers,tran_id )  VALUES( :vo, :pro, :pd,:tran_id ) ",
+                    *m_session << "INSERT INTO votes ( voter, proxy, producers,tran_id )  VALUES( :vo, :pro, :pd,:tran_id ) ON DUPLICATE KEY UPDATE proxy=:pro,producers=:pd,tran_id=:tran_id",
                             soci::use(voter),
+                            soci::use(proxy),
+                            soci::use(producers),
+                            soci::use(transaction_id),
                             soci::use(proxy),
                             soci::use(producers),
                             soci::use(transaction_id);
@@ -321,7 +324,7 @@ namespace eosio {
 
                 string insertassets;
                 try{
-                    insertassets = "REPLACE INTO assets(supply, max_supply, symbol_precision, symbol,  issuer, contract_owner) VALUES( :am, :mam, :pre, :sym, :issuer, :owner)";
+                    insertassets = "INSERT INTO assets(supply, max_supply, symbol_precision, symbol,  issuer, contract_owner) VALUES( :am, :mam, :pre, :sym, :issuer, :owner)";
                     *m_session << insertassets,
                             soci::use( 0 ),
                             soci::use( maximum_supply.get_amount() ),

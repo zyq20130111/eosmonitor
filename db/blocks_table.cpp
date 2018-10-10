@@ -17,9 +17,18 @@ namespace eosio {
 
 
         try{
-            *m_session << "REPLACE INTO blocks(block_id, block_number, prev_block_id, timestamp, transaction_merkle_root, action_merkle_root,"
-                "producer, version, confirmed, num_transactions) VALUES (:id, :in, :pb, FROM_UNIXTIME(:ti), :tr, :ar, :pa, :ve, :pe, :nt)",
+            *m_session << "INSERT INTO blocks(block_id, block_number, prev_block_id, timestamp, transaction_merkle_root, action_merkle_root,"
+                "producer, version, confirmed, num_transactions) VALUES (:id, :in, :pb, FROM_UNIXTIME(:ti), :tr, :ar, :pa, :ve, :pe, :nt) ON DUPLICATE KEY UPDATE block_number=:in, prev_block_id=:pb, timestamp=FROM_UNIXTIME(:ti), transaction_merkle_root=:tr, action_merkle_root=:ar,producer=:pa, version=:ve, confirmed=:pe, num_transactions=:nt",
                 soci::use(block_id_str),
+                soci::use(block->block_num()),
+                soci::use(previous_block_id_str),
+                soci::use(timestamp),
+                soci::use(transaction_mroot_str),
+                soci::use(action_mroot_str),
+                soci::use(block->producer.to_string()),
+                soci::use(block->schedule_version),
+                soci::use(block->confirmed),
+                soci::use(num_transactions),
                 soci::use(block->block_num()),
                 soci::use(previous_block_id_str),
                 soci::use(timestamp),
