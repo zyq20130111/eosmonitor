@@ -347,8 +347,8 @@ namespace eosio {
                     t.symbol = it->get<string>(3);
                     
 
-                    contract = it->get<string>(0);
-                    symbol   = it->get<string>(3);
+                    //contract = it->get<string>(0);
+                    //symbol   = it->get<string>(3);
                     
                     const abi_def abi = get_abi( db, t.contract );
                     auto table_type = get_table_type( abi, "accounts" );
