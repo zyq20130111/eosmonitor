@@ -337,15 +337,18 @@ namespace eosio {
 
 
             auto assets = sql_db->m_actions_table->get_assets(sql_db->m_session_pool->get_session());
+            auto contract = std::string("");
+            auto symbol   = std::string("");
 
             for(auto it = assets.begin() ; it != assets.end(); it++){
                 try{
                     token t;
                     t.contract = it->get<string>(0);
                     t.symbol = it->get<string>(3);
-                    ilog("get_hold_tokens start");
-                    ilog(it->get<string>(0));
-                    ilog(it->get<string>(3));
+                    
+
+                    contract = it->get<string>(0);
+                    symbol   = it->get<string>(3);
                     
                     const abi_def abi = get_abi( db, t.contract );
                     auto table_type = get_table_type( abi, "accounts" );
@@ -371,10 +374,17 @@ namespace eosio {
                     }, [&](){
                         
                     });
-                    ilog("get_hold_tokens end");
                 } catch(fc::exception& e) {
+                    ilog("get token start");
+                    ilog(contract);
+                    ilog(symbol);
+                    ilog("get token end");
                     wlog("${e}",("e",e.what()));
                 } catch(std::exception& e) {
+                    ilog("get token start");
+                    ilog(contract);
+                    ilog(symbol);
+                    ilog("get token end");                    
                     wlog("${e}",("e",e.what()));
                 } catch (...) {
                     wlog("unknown");
