@@ -342,18 +342,10 @@ namespace eosio
             return true;
         }
                
-        try{
             
-            flag = update_token(acc_name);
-            flag = update_stake(acc_name);
+        flag = update_token(acc_name);
+        flag = update_stake(acc_name);
 
-        } catch(fc::exception& e) {
-            wlog("${e}",("e",e.what()));
-        } catch(std::exception& e) {
-            wlog("${e}",("e",e.what()));
-        } catch (...) {
-            wlog("unknown");
-        }
 
         return flag;
 

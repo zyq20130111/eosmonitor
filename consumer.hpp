@@ -242,46 +242,37 @@ class consumer final : public boost::noncopyable {
 
         ilog("Consumer thread Start run_monitors");
         while (!exit) { 
+                           
+            if(is_waiting){
+                boost::this_thread::sleep(boost::posix_time::seconds(10));
+                is_waiting = false;
+            }
             
-            try{
-                
-                if(is_waiting){
-                    boost::this_thread::sleep(boost::posix_time::seconds(10));
-                    is_waiting = false;
-                }
-                
 
-                //开始求得第一条和最后一条记录的ID
-                if(!start_loop){
-                
-                    min_account_id = db->get_min_account_id();
-                    max_account_id = db->get_max_account_id();
-                    cur_account_id = min_account_id;
-                    start_loop = true;
-                
-                }
+            //开始求得第一条和最后一条记录的ID
+            if(!start_loop){
+            
+                min_account_id = db->get_min_account_id();
+                max_account_id = db->get_max_account_id();
+                cur_account_id = min_account_id;
+                start_loop = true;
+            
+            }
 
-                //开始循环从第一条记录
-                if(cur_account_id >= 0){
+            //开始循环从第一条记录
+            if(cur_account_id >= 0){
 
-                    if(db->monitoraccount(cur_account_id))
-                    {
-                        cur_account_id = cur_account_id + 1;
+                if(db->monitoraccount(cur_account_id))
+                {
+                    cur_account_id = cur_account_id + 1;
 
-                        if(cur_account_id > max_account_id){
-                            start_loop = false;
-                        }
+                    if(cur_account_id > max_account_id){
+                        start_loop = false;
                     }
                 }
+            }
 
-                boost::this_thread::sleep(boost::posix_time::milliseconds(10));
-
-
-            } catch (std::exception& e) {
-                elog("lose some catch ${e}", ("e", e.what()));
-            } catch (...) {
-                elog("Unknown exception while run_monitors");
-            }  
+            boost::this_thread::sleep(boost::posix_time::milliseconds(10));
 
         }
         
