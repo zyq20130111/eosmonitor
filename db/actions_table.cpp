@@ -324,14 +324,18 @@ namespace eosio {
 
                 string insertassets;
                 try{
-                    insertassets = "INSERT INTO assets(supply, max_supply, symbol_precision, symbol,  issuer, contract_owner) VALUES( :am, :mam, :pre, :sym, :issuer, :owner)";
+                    insertassets = "INSERT INTO assets(supply, max_supply, symbol_precision, symbol,  issuer, contract_owner) VALUES( :am, :mam, :pre, :sym, :issuer, :owner) ON DUPLICATE KEY UPDATE supply=:am, max_supply=:mam,symbol_precision=:pre,issuer=:issuer";
                     *m_session << insertassets,
                             soci::use( 0 ),
                             soci::use( maximum_supply.get_amount() ),
                             soci::use( maximum_supply.decimals() ),
                             soci::use( maximum_supply.get_symbol().name() ),
                             soci::use( issuer ),
-                            soci::use( action.account.to_string() );
+                            soci::use( action.account.to_string() ),
+                            soci::use( 0 ),
+                            soci::use( maximum_supply.get_amount() ),
+                            soci::use( maximum_supply.decimals() )
+                            soci::use( issuer );
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
                 } catch(std::exception e) {
