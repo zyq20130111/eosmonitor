@@ -343,7 +343,10 @@ namespace eosio {
                     token t;
                     t.contract = it->get<string>(0);
                     t.symbol = it->get<string>(3);
-
+                    ilog("get_hold_tokens start");
+                    ilog(it->get<string>(0));
+                    ilog(it->get<string>(3));
+                    
                     const abi_def abi = get_abi( db, t.contract );
                     auto table_type = get_table_type( abi, "accounts" );
 
@@ -368,6 +371,7 @@ namespace eosio {
                     }, [&](){
                         
                     });
+                    ilog("get_hold_tokens end");
                 } catch(fc::exception& e) {
                     wlog("${e}",("e",e.what()));
                 } catch(std::exception& e) {
