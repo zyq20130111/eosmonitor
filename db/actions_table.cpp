@@ -334,7 +334,7 @@ namespace eosio {
                             soci::use( action.account.to_string() ),
                             soci::use( 0 ),
                             soci::use( maximum_supply.get_amount() ),
-                            soci::use( maximum_supply.decimals() )
+                            soci::use( maximum_supply.decimals() ),
                             soci::use( issuer );
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
