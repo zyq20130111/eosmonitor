@@ -68,7 +68,6 @@ namespace eosio {
         if(tc->action_traces.size()==1 && tc->action_traces[0].act.name.to_string() == "onblock" ) return ;
 
         const trace_and_block_time tbt{ tc, chain_plug->chain().pending_block_time() };
-        handler->push_transaction_trace(tbt);
     }
 
     sql_db_plugin::sql_db_plugin():my(new sql_db_plugin_impl ){}

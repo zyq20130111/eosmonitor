@@ -164,24 +164,6 @@ CREATE TABLE `blocks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `refunds`
---
-
-DROP TABLE IF EXISTS `refunds`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `refunds` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `owner` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '资源拥有者',
-  `request_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `net_amount` bigint(65) NOT NULL DEFAULT '0' COMMENT '赎回的 net 资源',
-  `cpu_amount` bigint(65) NOT NULL DEFAULT '0' COMMENT '赎回的 cpu 资源',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_refunds_owner` (`owner`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `stakes`
 --
 
@@ -296,30 +278,3 @@ CREATE TABLE `votes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `proposal`
---
-
-DROP TABLE IF EXISTS `proposal`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `proposal` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `proposer` varchar(16) NOT NULL DEFAULT '0' COMMENT '多签发起者',
-  `proposal_name` varchar(16) NOT NULL DEFAULT '0' COMMENT '多签提案名称',
-  `requested_approvals` text NOT NULL COMMENT '多签提案需要的权限',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_proposer_proposal_name` (`proposer`,`proposal_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2018-07-23 15:41:58
