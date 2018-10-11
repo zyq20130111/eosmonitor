@@ -41,7 +41,7 @@ namespace eosio {
         }
 
         try {
-            auto is_success = parse_actions( m_session, action , transaction_id_str);
+            auto is_success = parse_actions( m_session, action , transaction_id_str,timestamp);
             return is_success;
         }  catch(fc::exception& e) {
             wlog("fc exception: ${e}",("e",e.what()));
@@ -56,7 +56,7 @@ namespace eosio {
         return false;
     }
 
-    bool actions_table::parse_actions( std::shared_ptr<soci::session> m_session, chain::action action,const std::string & transaction_id ) {
+    bool actions_table::parse_actions( std::shared_ptr<soci::session> m_session, chain::action action,const std::string & transaction_id ,const long long timestamp) {
 
         chain::abi_def abi;
         std::string abi_def_account;
@@ -109,14 +109,12 @@ namespace eosio {
                 auto producers = fc::json::to_string( abi_data["producers"] );
 
                 try{
-                    *m_session << "INSERT INTO votes ( voter, proxy, producers,tran_id )  VALUES( :vo, :pro, :pd,:tran_id ) ON DUPLICATE KEY UPDATE proxy=:pro,producers=:pd,tran_id=:tran_id",
+                    *m_session << "INSERT INTO votes ( voter, proxy, producers,tran_id,block_time)  VALUES( :vo, :pro, :pd,:tran_id,FROM_UNIXTIME(:bt)) ",
                             soci::use(voter),
                             soci::use(proxy),
                             soci::use(producers),
                             soci::use(transaction_id),
-                            soci::use(proxy),
-                            soci::use(producers),
-                            soci::use(transaction_id);
+                            soci::use(timestamp);
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
                 } catch(std::exception e) {
@@ -133,11 +131,12 @@ namespace eosio {
                 auto quant = abi_data["quant"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO buyram (payer,receiver,quant ,tran_id)  VALUES( :payer, :receiver, :quant,:tran_id ) ",
+                    *m_session << "INSERT INTO buyram (payer,receiver,quant ,tran_id,block_time)  VALUES( :payer, :receiver, :quant,:tran_id ,FROM_UNIXTIME(:bt)) ",
                             soci::use(payer),
                             soci::use(receiver),
                             soci::use(quant),
-                            soci::use(transaction_id);
+                            soci::use(transaction_id),
+                            soci::use(timestamp);
 
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
@@ -155,10 +154,11 @@ namespace eosio {
                 auto bytes   = abi_data["bytes"].as_int64();
 
                 try{
-                    *m_session << "INSERT INTO sellram (account,bytes ,tran_id)  VALUES( :account, :bytes,:tran_id ) ",
+                    *m_session << "INSERT INTO sellram (account,bytes ,tran_id,block_time)  VALUES( :account, :bytes,:tran_id ,FROM_UNIXTIME(:bt) ) ",
                             soci::use(account),
                             soci::use(bytes),
-                            soci::use(transaction_id);
+                            soci::use(transaction_id),
+                            soci::use(timestamp);
 
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
@@ -177,12 +177,13 @@ namespace eosio {
                 auto stake_cpu_quantity = abi_data["stake_cpu_quantity"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO delegatebw (frm_acc,receiver ,stake_net_quantity,stake_cpu_quantity,tran_id)  VALUES( :from, :receiver , :stake_net_quantity , :stake_cpu_quantity , :tran_id ) ",
+                    *m_session << "INSERT INTO delegatebw (frm_acc,receiver ,stake_net_quantity,stake_cpu_quantity,tran_id,block_time)  VALUES( :from, :receiver , :stake_net_quantity , :stake_cpu_quantity , :tran_id ,FROM_UNIXTIME(:bt) ) ",
                             soci::use(from),
                             soci::use(receiver),
                             soci::use(stake_net_quantity),
                             soci::use(stake_cpu_quantity),
-                            soci::use(transaction_id);
+                            soci::use(transaction_id),
+                            soci::use(timestamp);
 
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
@@ -201,12 +202,13 @@ namespace eosio {
                 auto unstake_cpu_quantity = abi_data["unstake_cpu_quantity"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO undelegatebw (frm_acc,receiver ,unstake_net_quantity,unstake_cpu_quantity,tran_id)  VALUES( :from, :receiver, :unstake_net_quantity , :unstake_cpu_quantity , :tran_id ) ",
+                    *m_session << "INSERT INTO undelegatebw (frm_acc,receiver ,unstake_net_quantity,unstake_cpu_quantity,tran_id,block_time)  VALUES( :from, :receiver, :unstake_net_quantity , :unstake_cpu_quantity , :tran_id ,FROM_UNIXTIME(:bt) ) ",
                             soci::use(from),
                             soci::use(receiver),
                             soci::use(unstake_net_quantity),
                             soci::use(unstake_cpu_quantity),
-                            soci::use(transaction_id);
+                            soci::use(transaction_id),
+                            soci::use(timestamp);
 
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
@@ -223,11 +225,12 @@ namespace eosio {
                 auto url  = abi_data["url"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO regproducer (producer,producer_key ,url,tran_id)  VALUES( :producer, :producer_key, :url, :tran_id ) ",
+                    *m_session << "INSERT INTO regproducer (producer,producer_key ,url,tran_id,block_time)  VALUES( :producer, :producer_key, :url, :tran_id ,FROM_UNIXTIME(:bt)) ",
                             soci::use(producer),
                             soci::use(producer_key),
                             soci::use(url),
-                            soci::use(transaction_id);
+                            soci::use(transaction_id),
+                            soci::use(timestamp);
 
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );
@@ -248,12 +251,13 @@ namespace eosio {
                 auto memo = abi_data["memo"].as_string();
 
                 try{
-                    *m_session << "INSERT INTO transfer (frm_acc,to_acc ,quantity,memo,tran_id)  VALUES( :from, :to,:quantity,:memo,:tran_id ) ",
+                    *m_session << "INSERT INTO transfer (frm_acc,to_acc ,quantity,memo,tran_id,block_time)  VALUES( :from, :to,:quantity,:memo,:tran_id ,FROM_UNIXTIME(:bt)) ",
                             soci::use(from),
                             soci::use(to),
                             soci::use(quantity),
                             soci::use(memo),
-                            soci::use(transaction_id);
+                            soci::use(transaction_id),
+                            soci::use(timestamp);
 
                 } catch(soci::mysql_soci_error e) {
                     wlog("soci::error: ${e}",("e",e.what()) );

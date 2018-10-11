@@ -37,7 +37,7 @@ class actions_table : public mysql_table {
         actions_table(){}
 
         bool add( std::shared_ptr<soci::session>, chain::action , chain::transaction_id_type , chain::block_timestamp_type , std::vector<std::string> ); 
-        bool parse_actions( std::shared_ptr<soci::session>, chain::action ,const std::string & transaction_id);
+        bool parse_actions( std::shared_ptr<soci::session>, chain::action ,const std::string & transaction_id,const long long timestamp);
         string add_data( std::shared_ptr<soci::session>, chain::action );
         soci::rowset<soci::row> get_assets( std::shared_ptr<soci::session>, int ,int );
         soci::rowset<soci::row> get_assets( std::shared_ptr<soci::session> );
