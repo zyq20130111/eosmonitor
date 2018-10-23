@@ -178,7 +178,7 @@ class consumer final : public boost::noncopyable {
                 is_waiting = false;
             }
             
-
+            /*
             //开始求得第一条和最后一条记录的ID
             if(!start_loop){
             
@@ -201,7 +201,8 @@ class consumer final : public boost::noncopyable {
                     }
                 }
             }
-
+            */
+           
             boost::this_thread::sleep(boost::posix_time::milliseconds(10));
 
         }
