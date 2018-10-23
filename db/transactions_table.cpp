@@ -12,7 +12,7 @@ namespace eosio {
         const auto expiration = std::chrono::seconds{transaction.expiration.sec_since_epoch()}.count();
         try{
             
-            *m_session << "INSERT INTO transactions(id, ref_block_num, ref_block_prefix, expiration, pending, created_at, updated_at, num_actions) "
+            *m_session << "INSERT INTO transactions(tx_id, ref_block_num, ref_block_prefix, expiration, pending, created_at, updated_at, num_actions) "
                         "VALUES (:id, :ida, :idb, FROM_UNIXTIME(:ex), :pe, FROM_UNIXTIME(:ca), FROM_UNIXTIME(:ua), :na)",
                 soci::use(transaction_id_str,"id"),
                 soci::use((long long )transaction.ref_block_num,"ida"),

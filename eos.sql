@@ -220,23 +220,6 @@ CREATE TABLE `tokens` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `traces`
---
-
-DROP TABLE IF EXISTS `traces`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `traces` (
-  `tx_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '交易号',
-  `data` mediumtext DEFAULT NULL COMMENT '交易结果集',
-  `irreversible` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否不可逆',
-  PRIMARY KEY (`tx_id`),
-  UNIQUE KEY `idx_transactions_id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `transactions`
 --
 
@@ -244,8 +227,8 @@ DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `transactions` (
-  `tx_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '区块交易的 merkel 根',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tx_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '区块交易的 merkel 根',
   `block_num` bigint(20) NOT NULL DEFAULT '0' COMMENT '交易的区块号',
   `ref_block_num` bigint(20) NOT NULL DEFAULT '0' COMMENT '交易发起时的依赖区块号',
   `ref_block_prefix` bigint(20) NOT NULL DEFAULT '0' COMMENT '交易发起时的依赖区块前缀',
