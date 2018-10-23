@@ -1,6 +1,6 @@
 #pragma once
 #include <soci/soci.h>
-
+//#include "/data/soci/include/soci/soci.h"
 #include <eosio/chain/config.hpp>
 #include <eosio/chain/block_state.hpp>
 #include <eosio/chain/transaction.hpp>

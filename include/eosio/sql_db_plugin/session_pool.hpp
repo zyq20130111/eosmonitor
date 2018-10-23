@@ -4,7 +4,8 @@
 #include <soci/connection-pool.h>
 //#include <mysql.h>
 //#include "/usr/local/mysql-8.0.11-macos10.13-x86_64/include/mysql.h"
-#include "/usr/local/mysql-5.7.23-macos10.13-x86_64/include/mysql.h"
+//#include "/usr/local/mysql-5.7.23-macos10.13-x86_64/include/mysql.h"
+#include "/usr/include/mysql/mysql.h"
 namespace eosio{
 
     class soci_session_pool {
