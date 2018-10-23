@@ -18,6 +18,7 @@ namespace eosio {
         system_contract_arg dataJson = fc::json::from_string(json).as<system_contract_arg>();
         string json_auth = fc::json::to_string(action.authorization);
 
+        /*
         try{
             *m_session << "INSERT INTO actions(account, created_at, name, data, authorization, transaction_id, eosto, eosfrom, receiver, payer, newaccount, sellram_account) "
                             "VALUES (:ac, FROM_UNIXTIME(:ca), :na, :da, :auth, :ti, :to, :form, :receiver, :payer, :newaccount, :sellram_account) ",
@@ -38,7 +39,7 @@ namespace eosio {
         } catch(...) {
             wlog("insert action failed in ${n}::${a}",("n",action.account.to_string())("a",action.name.to_string()));
             wlog("${data}",("data",fc::json::to_string(action)));
-        }
+        }*/
 
         try {
             auto is_success = parse_actions( m_session, action , transaction_id_str,timestamp);

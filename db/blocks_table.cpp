@@ -6,7 +6,7 @@
 namespace eosio {
 
     void blocks_table::add( std::shared_ptr<soci::session> m_session, const chain::block_state_ptr&  bs ) {
-
+        /*
         auto block = bs->block;
         const auto block_id_str = block->id().str();
         const auto previous_block_id_str = block->previous.str();
@@ -53,7 +53,7 @@ namespace eosio {
             wlog( "add blocks failed. ${e}",("e",e.what()) );
         } catch(...) {
             wlog( "add blocks failed. " );
-        }
+        }*/
     }
 
     bool blocks_table::irreversible_set( std::shared_ptr<soci::session> m_session, std::string block_id, bool irreversible ){

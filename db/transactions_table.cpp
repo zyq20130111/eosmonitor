@@ -8,6 +8,7 @@ namespace eosio {
 
     void transactions_table::add( std::shared_ptr<soci::session> m_session, chain::transaction transaction ) {
 
+        /*
         const auto transaction_id_str = transaction.id().str();
         const auto expiration = std::chrono::seconds{transaction.expiration.sec_since_epoch()}.count();
         try{
@@ -30,7 +31,7 @@ namespace eosio {
             wlog("${e}",("e",e.what()));
         } catch(...){
             wlog("insert transaction failed. ${id}",("id",transaction_id_str));
-        }
+        }*/
     }
 
     void transactions_table::irreversible_set( std::shared_ptr<soci::session> m_session, std::string block_id, bool irreversible, std::string transaction_id_str) {
