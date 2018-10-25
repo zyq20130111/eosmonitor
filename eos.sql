@@ -210,7 +210,7 @@ CREATE TABLE `tokens` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `account` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '账号',
   `symbol` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Token 资产符号',
-  `balance` bigint(65) NOT NULL DEFAULT '0' COMMENT 'Token 余额',
+  `balance` varchar(200) NOT NULL DEFAULT '0' COMMENT 'Token 余额',
   `symbol_precision` int(2) NOT NULL DEFAULT '0' COMMENT 'Token 资产精度',
   `contract_owner` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Token 合约拥有者',
   PRIMARY KEY (`id`),
